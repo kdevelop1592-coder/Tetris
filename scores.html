@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전체 점수 — 경덕중학교 테트리스 마스터</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .scores-wrapper {
+            margin-top: 56px;
+            padding: 24px;
+            max-width: 960px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+        }
+
+        .scores-title {
+            font-size: 14px;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, var(--glow-yellow), var(--glow-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 12px rgba(255, 238, 0, .4));
+            margin-bottom: 24px;
+        }
+
+        /* ─── Tabs ─── */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: rgba(255, 255, 255, 0.35);
+            font-family: 'Press Start 2P', monospace;
+            font-size: 6px;
+            letter-spacing: 1px;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: -1px;
+        }
+
+        .tab-btn.active {
+            color: var(--glow-yellow);
+            border-bottom-color: var(--glow-yellow);
+            text-shadow: 0 0 8px var(--glow-yellow);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* ─── Filter bar ─── */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-bar input {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'Press Start 2P', monospace;
+            font-size: 6px;
+            padding: 8px 12px;
+            width: 200px;
+        }
+
+        .filter-bar input:focus {
+            outline: none;
+            border-color: var(--glow-cyan);
+        }
+
+        .filter-bar select {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'Press Start 2P', monospace;
+            font-size: 6px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        /* ─── Table ─── */
+        .scores-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 6px;
+        }
+
+        .scores-table th {
+            text-align: left;
+            color: var(--glow-yellow);
+            letter-spacing: 1px;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 5px;
+            text-shadow: 0 0 6px var(--glow-yellow);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .scores-table th:hover {
+            color: var(--glow-cyan);
+            text-shadow: 0 0 6px var(--glow-cyan);
+        }
+
+        .scores-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            vertical-align: middle;
+        }
+
+        .scores-table tr:hover td {
+            background: rgba(255, 238, 0, 0.03);
+        }
+
+        .rank-medal {
+            font-size: 12px;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-cell img {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            object-fit: cover;
+        }
+
+        .avatar-ph {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        /* ─── Pagination ─── */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: rgba(255, 255, 255, .4);
+            font-family: 'Press Start 2P', monospace;
+            font-size: 5px;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .page-btn.active,
+        .page-btn:hover {
+            border-color: var(--glow-yellow);
+            color: var(--glow-yellow);
+            text-shadow: 0 0 6px var(--glow-yellow);
+        }
+
+        .tbl-loading {
+            text-align: center;
+            padding: 32px;
+            color: var(--glow-cyan);
+            font-size: 6px;
+            animation: blink 1s step-end infinite;
+        }
+
+        .tbl-empty {
+            text-align: center;
+            padding: 32px;
+            color: rgba(255, 255, 255, .2);
+            font-size: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Auth Header -->
+    <header id="auth-header">
+        <img id="user-avatar" src="" alt="avatar">
+        <span id="user-name"></span>
+        <span id="admin-link" style="display:none;">
+            <a href="admin.html"
+                style="color:var(--glow-pink);font-family:'Press Start 2P',monospace;font-size:6px;text-decoration:none;margin-right:8px;">👑
+                관리자</a>
+        </span>
+        <a href="index.html"
+            style="color:var(--glow-cyan);font-family:'Press Start 2P',monospace;font-size:6px;text-decoration:none;margin-right:8px;">🎮
+            게임</a>
+        <button id="auth-btn">LOGOUT</button>
+    </header>
+
+    <div class="scores-wrapper">
+        <div class="scores-title">📊 전체 점수 현황</div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="all">전체 기록</button>
+            <button class="tab-btn" data-tab="best">유저별 최고점</button>
+        </div>
+
+        <!-- 전체 기록 탭 -->
+        <div class="tab-panel active" id="tab-all">
+            <div class="filter-bar">
+                <input type="text" id="search-all" placeholder="이름 검색...">
+                <select id="sort-all">
+                    <option value="score">점수 높은 순</option>
+                    <option value="level">레벨 높은 순</option>
+                    <option value="lines">라인 많은 순</option>
+                    <option value="date">최신 순</option>
+                </select>
+            </div>
+            <table class="scores-table">
+                <thead>
+                    <tr>
+                        <th style="width:40px;">#</th>
+                        <th>플레이어</th>
+                        <th>점수</th>
+                        <th>레벨</th>
+                        <th>라인</th>
+                        <th>날짜</th>
+                    </tr>
+                </thead>
+                <tbody id="all-tbody">
+                    <tr>
+                        <td colspan="6" class="tbl-loading">LOADING...</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination" id="all-pagination"></div>
+        </div>
+
+        <!-- 유저별 최고점 탭 -->
+        <div class="tab-panel" id="tab-best">
+            <div class="filter-bar">
+                <input type="text" id="search-best" placeholder="이름 검색...">
+            </div>
+            <table class="scores-table">
+                <thead>
+                    <tr>
+                        <th style="width:40px;">#</th>
+                        <th>플레이어</th>
+                        <th>최고점</th>
+                        <th>최고 레벨</th>
+                        <th>총 게임</th>
+                        <th>총 라인</th>
+                    </tr>
+                </thead>
+                <tbody id="best-tbody">
+                    <tr>
+                        <td colspan="6" class="tbl-loading">LOADING...</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pagination" id="best-pagination"></div>
+        </div>
+    </div>
+
+    <script type="module" src="js/scores.js"></script>
+</body>
+
+</html>

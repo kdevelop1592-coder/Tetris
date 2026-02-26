@@ -1,54 +1,68 @@
-import { auth } from './firebase.js';
+import { auth, db } from './firebase.js';
 import {
     GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import {
+    doc, getDoc, setDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { ADMIN_UIDS } from './admin.js';
 
 import {
     state, createBoard, randomPiece, collides, rotate,
     getGhostY, getDropSpeed, actualClearLines, COLS, ROWS, PIECES
 } from './game.js';
 import { draw, drawNext, clearCanvas } from './render.js';
-import { updateUI, showLoginRequiredOverlay, showReadyOverlay, showGameOverOverlay, hideOverlay, updateAuthUI } from './ui.js';
-import { saveScore, loadRanking } from './ranking.js';
+import { updateUI, showReadyOverlay, showGameOverOverlay, hideOverlay, updateAuthUI } from './ui.js';
+import { saveScore, loadRanking, upsertUser } from './ranking.js';
 
 // ─── Auth ────────────────────────────────────────────────────
 let currentUser = null;
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        // 비로그인 → 로그인 페이지로
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // 차단 여부 확인
+    try {
+        const bannedSnap = await getDoc(doc(db, 'bannedUsers', user.uid));
+        if (bannedSnap.exists()) {
+            await signOut(auth);
+            window.location.href = 'login.html?banned=1';
+            return;
+        }
+    } catch (e) { console.error('차단 확인 오류:', e); }
+
+    // 유저 정보 upsert (최종 로그인 시각 갱신)
+    await upsertUser(user);
+
     currentUser = user;
     updateAuthUI(user);
     loadRanking();
-    // 게임 중이 아닼 경우에만 오버레이 전환
+
+    // 관리자 링크 표시
+    const adminLink = document.getElementById('admin-link');
+    if (adminLink && (ADMIN_UIDS.length === 0 || ADMIN_UIDS.includes(user.uid))) {
+        adminLink.style.display = 'inline';
+    }
+
     if (!state.running) {
-        if (user) {
-            showReadyOverlay();
-        } else {
-            showLoginRequiredOverlay();
-        }
+        showReadyOverlay();
     }
 });
 
 document.getElementById('auth-btn').addEventListener('click', async () => {
     if (currentUser) {
         await signOut(auth);
-    } else {
-        const provider = new GoogleAuthProvider();
-        provider.setCustomParameters({ prompt: 'select_account' });
-        try {
-            await signInWithPopup(auth, provider);
-        } catch (e) {
-            console.error('로그인 실패:', e);
-        }
+        // signOut 후 onAuthStateChanged가 login.html로 리다이렉트
     }
 });
 
 // ─── Game Start / End ────────────────────────────────────────
 export function startGame() {
-    // 로그인 필수 체크
-    if (!currentUser) {
-        showLoginRequiredOverlay();
-        return;
-    }
+    if (!currentUser) { window.location.href = 'login.html'; return; }
     state.board = createBoard();
     state.score = 0;
     state.level = 1;

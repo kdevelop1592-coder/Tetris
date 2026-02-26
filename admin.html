@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지 — 경덕중학교 테트리스 마스터</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ─── Admin Layout ─── */
+        .admin-wrapper {
+            margin-top: 56px;
+            padding: 24px;
+            max-width: 960px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+        }
+
+        .admin-title {
+            font-size: 14px;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, var(--glow-cyan), var(--glow-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.4));
+            margin-bottom: 24px;
+        }
+
+        /* ─── Tabs ─── */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: rgba(255, 255, 255, 0.35);
+            font-family: 'Press Start 2P', monospace;
+            font-size: 6px;
+            letter-spacing: 1px;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: -1px;
+        }
+
+        .tab-btn.active {
+            color: var(--glow-cyan);
+            border-bottom-color: var(--glow-cyan);
+            text-shadow: 0 0 8px var(--glow-cyan);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* ─── Stats bar ─── */
+        .stats-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-chip {
+            border: 1px solid var(--border);
+            background: var(--panel);
+            padding: 10px 16px;
+            font-size: 5px;
+            color: var(--glow-cyan);
+            letter-spacing: 1px;
+        }
+
+        .stat-chip span {
+            display: block;
+            color: var(--glow-yellow);
+            font-size: 10px;
+            margin-top: 4px;
+        }
+
+        /* ─── Table ─── */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 6px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            color: var(--glow-cyan);
+            letter-spacing: 1px;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 5px;
+            text-shadow: 0 0 6px var(--glow-cyan);
+        }
+
+        .admin-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            vertical-align: middle;
+        }
+
+        .admin-table tr:hover td {
+            background: rgba(0, 255, 255, 0.03);
+        }
+
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-row img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            object-fit: cover;
+        }
+
+        .user-row .avatar-ph {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        .badge-banned {
+            background: rgba(255, 50, 50, 0.15);
+            border: 1px solid #ff3232;
+            color: #ff3232;
+            font-size: 4px;
+            padding: 2px 6px;
+            letter-spacing: 1px;
+        }
+
+        /* ─── Action Buttons ─── */
+        .btn-ban {
+            background: none;
+            border: 1px solid #ff3232;
+            color: #ff3232;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .btn-ban:hover {
+            background: rgba(255, 50, 50, 0.15);
+        }
+
+        .btn-unban {
+            background: none;
+            border: 1px solid var(--glow-cyan);
+            color: var(--glow-cyan);
+            font-family: 'Press Start 2P', monospace;
+            font-size: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .btn-unban:hover {
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        /* ─── Loading / Empty ─── */
+        .tbl-loading {
+            text-align: center;
+            padding: 32px;
+            color: var(--glow-cyan);
+            font-size: 6px;
+            animation: blink 1s step-end infinite;
+        }
+
+        .tbl-empty {
+            text-align: center;
+            padding: 32px;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 6px;
+        }
+
+        /* ─── Modal ─── */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-bg.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--panel);
+            border: 2px solid var(--border);
+            padding: 36px;
+            max-width: 360px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .modal-box h3 {
+            font-size: 9px;
+            color: var(--glow-pink);
+            text-shadow: 0 0 10px var(--glow-pink);
+            letter-spacing: 2px;
+        }
+
+        .modal-box p {
+            font-size: 6px;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 2;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'Press Start 2P', monospace;
+            font-size: 6px;
+            padding: 10px;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--glow-pink);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* ─── 접근 거부 화면 ─── */
+        .access-denied {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        .access-denied h1 {
+            font-size: 14px;
+            color: var(--glow-pink);
+            text-shadow: 0 0 20px var(--glow-pink);
+        }
+
+        .access-denied p {
+            font-size: 7px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Auth Header -->
+    <header id="auth-header">
+        <img id="user-avatar" src="" alt="avatar">
+        <span id="user-name"></span>
+        <a href="scores.html"
+            style="color:var(--glow-cyan);font-family:'Press Start 2P',monospace;font-size:6px;text-decoration:none;margin-right:8px;">📊
+            점수</a>
+        <a href="index.html"
+            style="color:var(--glow-cyan);font-family:'Press Start 2P',monospace;font-size:6px;text-decoration:none;margin-right:8px;">🎮
+            게임</a>
+        <button id="auth-btn">LOGOUT</button>
+    </header>
+
+    <!-- 접근 거부 화면 (기본 숨김) -->
+    <div class="access-denied" id="access-denied" style="display:none;">
+        <h1>ACCESS DENIED</h1>
+        <p>관리자만 접근할 수 있습니다.</p>
+        <button class="start-btn" onclick="location.href='index.html'">← BACK</button>
+    </div>
+
+    <!-- 관리자 본문 (기본 숨김) -->
+    <div class="admin-wrapper" id="admin-content" style="display:none;">
+
+        <div class="admin-title">👑 ADMIN PANEL</div>
+
+        <!-- 통계 -->
+        <div class="stats-bar">
+            <div class="stat-chip">총 유저<span id="stat-users">-</span></div>
+            <div class="stat-chip">차단 유저<span id="stat-banned">-</span></div>
+            <div class="stat-chip">총 게임 수<span id="stat-games">-</span></div>
+        </div>
+
+        <!-- 탭 -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="users">👤 유저 관리</button>
+            <button class="tab-btn" data-tab="banned">🚫 차단 목록</button>
+        </div>
+
+        <!-- 유저 관리 탭 -->
+        <div class="tab-panel active" id="tab-users">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>유저</th>
+                        <th>이메일</th>
+                        <th>가입일</th>
+                        <th>최고점</th>
+                        <th>상태</th>
+                        <th>액션</th>
+                    </tr>
+                </thead>
+                <tbody id="users-tbody">
+                    <tr>
+                        <td colspan="6" class="tbl-loading">LOADING...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 차단 목록 탭 -->
+        <div class="tab-panel" id="tab-banned">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>유저</th>
+                        <th>차단 사유</th>
+                        <th>차단일</th>
+                        <th>액션</th>
+                    </tr>
+                </thead>
+                <tbody id="banned-tbody">
+                    <tr>
+                        <td colspan="4" class="tbl-loading">LOADING...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 차단 확인 Modal -->
+    <div class="modal-bg" id="ban-modal">
+        <div class="modal-box">
+            <h3>🚫 유저 차단</h3>
+            <p id="ban-modal-name">해당 유저를 차단하시겠습니까?<br>차단된 유저는 로그인할 수 없습니다.</p>
+            <input type="text" class="modal-input" id="ban-reason" placeholder="차단 사유 (선택)">
+            <div class="modal-actions">
+                <button class="btn-ban" id="ban-confirm-btn" style="flex:1;padding:10px;">확인</button>
+                <button class="btn-unban" id="ban-cancel-btn" style="flex:1;padding:10px;">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/admin.js"></script>
+</body>
+
+</html>

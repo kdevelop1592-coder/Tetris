@@ -6,13 +6,11 @@
       ".firebaserc",
       ".git/**",
       ".gitignore",
-      "README.md"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
+      "README.md",
+      "firestore.rules"
     ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
   }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TETRIS — Arcade Edition</title>
+    <title>경덕중학교 테트리스 마스터</title>
     <meta name="description" content="레트로 아케이드 테트리스 — Google 로그인으로 글로벌 랭킹에 도전하세요!">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
@@ -16,6 +16,14 @@
     <header id="auth-header">
         <img id="user-avatar" src="" alt="avatar">
         <span id="user-name"></span>
+        <span id="admin-link" style="display:none;">
+            <a href="admin.html"
+                style="color:var(--glow-pink);font-family:'Press Start 2P',monospace;font-size:6px;text-decoration:none;margin-right:8px;">👑
+                관리자</a>
+        </span>
+        <a href="scores.html"
+            style="color:var(--glow-cyan);font-family:'Press Start 2P',monospace;font-size:6px;text-decoration:none;margin-right:8px;">📊
+            점수</a>
         <button id="auth-btn">GOOGLE LOGIN</button>
     </header>
 
@@ -47,8 +55,13 @@
 
         <!-- Center: Game Board -->
         <div>
-            <div class="title">TETRIS</div>
-            <div class="subtitle">ARCADE EDITION</div>
+            <div class="title-area">
+                <img src="images/logo.png" alt="경덕중학교 로고" class="school-logo" width="60" height="60">
+                <div>
+                    <div class="title">경덕중학교</div>
+                    <div class="subtitle">테트리스 마스터</div>
+                </div>
+            </div>
             <div class="game-wrapper">
                 <div class="game-border">
                     <canvas id="game-canvas" width="300" height="600"></canvas>

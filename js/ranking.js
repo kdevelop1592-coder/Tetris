@@ -1,7 +1,31 @@
 import { db, auth } from './firebase.js';
 import {
-    collection, addDoc, query, orderBy, limit, getDocs, serverTimestamp
+    collection, addDoc, query, orderBy, limit, getDocs, serverTimestamp,
+    doc, getDoc, setDoc
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+// ─── Upsert User to Firestore ────────────────────────────────
+export async function upsertUser(user) {
+    try {
+        const ref = doc(db, 'users', user.uid);
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+            await setDoc(ref, { lastLoginAt: serverTimestamp() }, { merge: true });
+        } else {
+            await setDoc(ref, {
+                uid: user.uid,
+                name: user.displayName || '익명',
+                email: user.email || '',
+                photoURL: user.photoURL || '',
+                joinedAt: serverTimestamp(),
+                lastLoginAt: serverTimestamp(),
+            });
+        }
+    } catch (e) {
+        console.error('유저 정보 저장 실패:', e);
+    }
+}
+
 
 // ─── Save Score to Firestore ─────────────────────────────────
 export async function saveScore(score, level, lines) {
