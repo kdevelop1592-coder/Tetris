@@ -1,0 +1,394 @@
+:root {
+    --bg: #0a0a0f;
+    --panel: #11111a;
+    --border: #2a2a4a;
+    --glow-cyan: #00ffff;
+    --glow-pink: #ff00aa;
+    --glow-yellow: #ffee00;
+    --text: #e0e0ff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    font-family: 'Press Start 2P', monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: var(--text);
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(0, 255, 255, 0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 50%, rgba(255, 0, 170, 0.04) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* CRT scanlines */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.08) 2px,
+            rgba(0, 0, 0, 0.08) 4px);
+    pointer-events: none;
+    z-index: 999;
+}
+
+/* ─── Auth Header ─── */
+#auth-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 48px;
+    background: rgba(17, 17, 26, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 0 20px;
+    z-index: 100;
+}
+
+#user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--glow-cyan);
+    display: none;
+    object-fit: cover;
+}
+
+#user-name {
+    font-size: 6px;
+    color: var(--glow-cyan);
+    letter-spacing: 1px;
+    display: none;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#auth-btn {
+    background: none;
+    border: 1px solid var(--glow-pink);
+    color: var(--glow-pink);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px var(--glow-pink);
+    transition: all 0.2s;
+}
+
+#auth-btn:hover {
+    background: rgba(255, 0, 170, 0.15);
+    box-shadow: 0 0 16px rgba(255, 0, 170, 0.4);
+}
+
+/* ─── Main Layout ─── */
+.main-wrapper {
+    margin-top: 56px;
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.side-panel {
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.panel-box {
+    border: 2px solid var(--border);
+    background: var(--panel);
+    padding: 16px;
+    position: relative;
+}
+
+.panel-box::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    pointer-events: none;
+}
+
+.panel-label {
+    font-size: 6px;
+    color: var(--glow-cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    text-shadow: 0 0 8px var(--glow-cyan);
+}
+
+.panel-value {
+    font-size: 12px;
+    color: var(--glow-yellow);
+    text-shadow: 0 0 12px var(--glow-yellow);
+    word-break: break-all;
+}
+
+#next-canvas {
+    display: block;
+    image-rendering: pixelated;
+}
+
+/* ─── Game Board ─── */
+.game-wrapper {
+    position: relative;
+}
+
+.game-border {
+    border: 3px solid var(--border);
+    padding: 3px;
+    background: var(--panel);
+    box-shadow:
+        0 0 40px rgba(0, 255, 255, 0.08),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+.game-border::before,
+.game-border::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-color: var(--glow-cyan);
+    border-style: solid;
+    box-shadow: 0 0 8px var(--glow-cyan);
+}
+
+.game-border::before {
+    top: -1px;
+    left: -1px;
+    border-width: 2px 0 0 2px;
+}
+
+.game-border::after {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 2px 2px 0;
+}
+
+#game-canvas {
+    display: block;
+    image-rendering: pixelated;
+}
+
+/* ─── Title ─── */
+.title {
+    text-align: center;
+    font-size: 28px;
+    letter-spacing: 8px;
+    margin-bottom: 4px;
+    background: linear-gradient(90deg, var(--glow-cyan), var(--glow-pink), var(--glow-yellow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.5));
+    animation: titlePulse 3s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+    0%, 100% { filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.5)); }
+    50%       { filter: drop-shadow(0 0 30px rgba(255, 0, 170, 0.6)); }
+}
+
+.subtitle {
+    font-size: 5px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 4px;
+    margin-bottom: 20px;
+}
+
+/* ─── Overlay ─── */
+#overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(10, 10, 15, 0.88);
+    z-index: 10;
+    gap: 20px;
+}
+
+#overlay h2 {
+    font-size: 14px;
+    color: var(--glow-cyan);
+    text-shadow: 0 0 20px var(--glow-cyan);
+    text-align: center;
+    line-height: 2;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.2; }
+}
+
+#overlay p {
+    font-size: 7px;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    line-height: 2;
+    letter-spacing: 1px;
+}
+
+.start-btn {
+    background: none;
+    border: 2px solid var(--glow-pink);
+    color: var(--glow-pink);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    padding: 12px 24px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px var(--glow-pink);
+    box-shadow: 0 0 20px rgba(255, 0, 170, 0.3);
+    transition: all 0.2s;
+}
+
+.start-btn:hover {
+    background: rgba(255, 0, 170, 0.1);
+    box-shadow: 0 0 30px rgba(255, 0, 170, 0.5);
+    transform: scale(1.05);
+}
+
+/* ─── Controls hint ─── */
+.controls {
+    font-size: 5px;
+    color: rgba(255, 255, 255, 0.25);
+    text-align: center;
+    line-height: 2.5;
+    margin-top: 8px;
+}
+
+/* ─── Level bar ─── */
+.level-bar-container {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+#level-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--glow-cyan), var(--glow-pink));
+    box-shadow: 0 0 8px var(--glow-cyan);
+    transition: width 0.3s;
+}
+
+/* ─── Ranking Panel ─── */
+#ranking-panel .panel-label {
+    color: var(--glow-yellow);
+    text-shadow: 0 0 8px var(--glow-yellow);
+}
+
+#ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.rank-item {
+    display: grid;
+    grid-template-columns: 16px 20px 1fr auto;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 2px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.rank-no {
+    font-size: 5px;
+    color: rgba(255,255,255,0.4);
+    text-align: right;
+}
+
+.rank-avatar {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.rank-avatar-placeholder {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--border);
+    display: inline-block;
+}
+
+.rank-name {
+    font-size: 5px;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+}
+
+.rank-score {
+    font-size: 5px;
+    color: var(--glow-cyan);
+    text-shadow: 0 0 6px var(--glow-cyan);
+    white-space: nowrap;
+}
+
+.rank-gold   .rank-no { color: #ffd700; text-shadow: 0 0 8px #ffd700; }
+.rank-silver .rank-no { color: #c0c0c0; text-shadow: 0 0 6px #c0c0c0; }
+.rank-bronze .rank-no { color: #cd7f32; text-shadow: 0 0 6px #cd7f32; }
+
+.rank-gold   .rank-name { color: #ffd700; }
+.rank-silver .rank-name { color: #c0c0c0; }
+.rank-bronze .rank-name { color: #cd7f32; }
+
+.rank-empty {
+    font-size: 5px;
+    color: rgba(255,255,255,0.2);
+    text-align: center;
+    padding: 8px 0;
+    letter-spacing: 1px;
+}
+
+.rank-loading {
+    font-size: 5px;
+    color: var(--glow-cyan);
+    text-align: center;
+    padding: 8px 0;
+    animation: blink 1s step-end infinite;
+}
