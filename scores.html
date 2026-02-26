@@ -18,7 +18,7 @@
         }
 
         .scores-title {
-            font-size: 14px;
+            font-size: 20px;
             letter-spacing: 4px;
             background: linear-gradient(90deg, var(--glow-yellow), var(--glow-cyan));
             -webkit-background-clip: text;
@@ -42,9 +42,9 @@
             border-bottom: 3px solid transparent;
             color: rgba(255, 255, 255, 0.35);
             font-family: 'Press Start 2P', monospace;
-            font-size: 6px;
+            font-size: 10px;
             letter-spacing: 1px;
-            padding: 10px 16px;
+            padding: 12px 20px;
             cursor: pointer;
             transition: all 0.2s;
             margin-bottom: -1px;
@@ -82,9 +82,9 @@
             border: 1px solid var(--border);
             color: var(--text);
             font-family: 'Press Start 2P', monospace;
-            font-size: 6px;
-            padding: 8px 12px;
-            width: 200px;
+            font-size: 10px;
+            padding: 12px 16px;
+            width: 240px;
         }
 
         .filter-bar input:focus {
@@ -97,8 +97,8 @@
             border: 1px solid var(--border);
             color: var(--text);
             font-family: 'Press Start 2P', monospace;
-            font-size: 6px;
-            padding: 8px 12px;
+            font-size: 10px;
+            padding: 12px 16px;
             cursor: pointer;
         }
 
@@ -106,16 +106,16 @@
         .scores-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 6px;
+            font-size: 10px;
         }
 
         .scores-table th {
             text-align: left;
             color: var(--glow-yellow);
             letter-spacing: 1px;
-            padding: 10px 12px;
-            border-bottom: 1px solid var(--border);
-            font-size: 5px;
+            padding: 16px 12px;
+            border-bottom: 2px solid var(--border);
+            font-size: 10px;
             text-shadow: 0 0 6px var(--glow-yellow);
             cursor: pointer;
             user-select: none;
@@ -127,10 +127,11 @@
         }
 
         .scores-table td {
-            padding: 10px 12px;
+            padding: 16px 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             color: var(--text);
             vertical-align: middle;
+            font-size: 12px;
         }
 
         .scores-table tr:hover td {
@@ -138,7 +139,7 @@
         }
 
         .rank-medal {
-            font-size: 12px;
+            font-size: 16px;
         }
 
         .user-cell {
@@ -148,16 +149,16 @@
         }
 
         .user-cell img {
-            width: 22px;
-            height: 22px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             border: 1px solid var(--border);
             object-fit: cover;
         }
 
         .avatar-ph {
-            width: 22px;
-            height: 22px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: var(--border);
             flex-shrink: 0;
@@ -177,8 +178,8 @@
             border: 1px solid var(--border);
             color: rgba(255, 255, 255, .4);
             font-family: 'Press Start 2P', monospace;
-            font-size: 5px;
-            padding: 6px 12px;
+            font-size: 8px;
+            padding: 8px 16px;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -192,17 +193,17 @@
 
         .tbl-loading {
             text-align: center;
-            padding: 32px;
+            padding: 40px;
             color: var(--glow-cyan);
-            font-size: 6px;
+            font-size: 10px;
             animation: blink 1s step-end infinite;
         }
 
         .tbl-empty {
             text-align: center;
-            padding: 32px;
+            padding: 40px;
             color: rgba(255, 255, 255, .2);
-            font-size: 6px;
+            font-size: 10px;
         }
     </style>
 </head>
@@ -215,11 +216,11 @@
         <span id="user-name"></span>
         <span id="admin-link" style="display:none;">
             <a href="admin.html"
-                style="color:var(--glow-pink);font-family:'Press Start 2P',monospace;font-size:6px;text-decoration:none;margin-right:8px;">👑
+                style="color:var(--glow-pink);font-family:'Press Start 2P',monospace;font-size:8px;text-decoration:none;margin-right:12px;">👑
                 관리자</a>
         </span>
         <a href="index.html"
-            style="color:var(--glow-cyan);font-family:'Press Start 2P',monospace;font-size:6px;text-decoration:none;margin-right:8px;">🎮
+            style="color:var(--glow-cyan);font-family:'Press Start 2P',monospace;font-size:8px;text-decoration:none;margin-right:12px;">🎮
             게임</a>
         <button id="auth-btn">LOGOUT</button>
     </header>

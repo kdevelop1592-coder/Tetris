@@ -53,10 +53,15 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-document.getElementById('auth-btn').addEventListener('click', async () => {
-    if (currentUser) {
-        await signOut(auth);
-        // signOut 후 onAuthStateChanged가 login.html로 리다이렉트
+document.addEventListener('DOMContentLoaded', () => {
+    const authBtn = document.getElementById('auth-btn');
+    if (authBtn) {
+        authBtn.addEventListener('click', async () => {
+            if (currentUser) {
+                await signOut(auth);
+                // signOut 후 onAuthStateChanged가 login.html로 리다이렉트
+            }
+        });
     }
 });
 
@@ -203,8 +208,9 @@ document.addEventListener('keydown', e => {
 });
 
 // ─── Init ────────────────────────────────────────────
-clearCanvas();
-// 첫 로드 시는 인증 상태를 모르드로 로그인 요구 화면 먼저 표시
-// onAuthStateChanged가 한번 발화하면 자동으로 올바른 화면으로 대체됨
-showLoginRequiredOverlay();
-loadRanking();
+document.addEventListener('DOMContentLoaded', () => {
+    clearCanvas();
+    // 첫 로드 시는 인증 상태를 모르므로 일단 오버레이를 감추거나 기본 상태로 둡니다.
+    // onAuthStateChanged가 발화하면 ready 오버레이 등 올바른 화면으로 대체됨
+    loadRanking();
+});

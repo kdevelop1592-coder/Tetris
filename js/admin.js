@@ -166,17 +166,25 @@ window.openBanModal = (uid, name) => {
     document.getElementById('ban-modal').classList.add('open');
 };
 
-document.getElementById('ban-cancel-btn').addEventListener('click', () => {
-    document.getElementById('ban-modal').classList.remove('open');
-    pendingBanUid = null;
-});
+document.addEventListener('DOMContentLoaded', () => {
+    const cancelBtn = document.getElementById('ban-cancel-btn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            document.getElementById('ban-modal').classList.remove('open');
+            pendingBanUid = null;
+        });
+    }
 
-document.getElementById('ban-confirm-btn').addEventListener('click', async () => {
-    if (!pendingBanUid) return;
-    const reason = document.getElementById('ban-reason').value.trim();
-    await banUser(pendingBanUid, reason);
-    document.getElementById('ban-modal').classList.remove('open');
-    pendingBanUid = null;
+    const confirmBtn = document.getElementById('ban-confirm-btn');
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', async () => {
+            if (!pendingBanUid) return;
+            const reason = document.getElementById('ban-reason').value.trim();
+            await banUser(pendingBanUid, reason);
+            document.getElementById('ban-modal').classList.remove('open');
+            pendingBanUid = null;
+        });
+    }
 });
 
 async function banUser(uid, reason) {
@@ -206,12 +214,15 @@ window.unbanUser = async (uid) => {
 };
 
 // ─── 탭 전환 ───────────────────────────────────────────────────
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            const panel = document.getElementById(`tab-${btn.dataset.tab}`);
+            if (panel) panel.classList.add('active');
+        });
     });
 });
 
@@ -224,9 +235,14 @@ function updateHeaderUI(user) {
     nameEl.style.display = 'block';
 }
 
-document.getElementById('auth-btn').addEventListener('click', async () => {
-    await signOut(auth);
-    location.href = 'login.html';
+document.addEventListener('DOMContentLoaded', () => {
+    const authBtn = document.getElementById('auth-btn');
+    if (authBtn) {
+        authBtn.addEventListener('click', async () => {
+            await signOut(auth);
+            location.href = 'login.html';
+        });
+    }
 });
 
 // ─── 유틸 ──────────────────────────────────────────────────────

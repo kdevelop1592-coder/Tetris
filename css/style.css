@@ -78,7 +78,7 @@ body::after {
 }
 
 #user-name {
-    font-size: 6px;
+    font-size: 10px;
     color: var(--glow-cyan);
     letter-spacing: 1px;
     display: none;
@@ -93,8 +93,8 @@ body::after {
     border: 1px solid var(--glow-pink);
     color: var(--glow-pink);
     font-family: 'Press Start 2P', monospace;
-    font-size: 6px;
-    padding: 6px 12px;
+    font-size: 10px;
+    padding: 8px 16px;
     cursor: pointer;
     letter-spacing: 1px;
     text-shadow: 0 0 8px var(--glow-pink);
@@ -138,7 +138,7 @@ body::after {
 }
 
 .panel-label {
-    font-size: 6px;
+    font-size: 10px;
     color: var(--glow-cyan);
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -147,7 +147,7 @@ body::after {
 }
 
 .panel-value {
-    font-size: 12px;
+    font-size: 16px;
     color: var(--glow-yellow);
     text-shadow: 0 0 12px var(--glow-yellow);
     word-break: break-all;
@@ -239,9 +239,9 @@ body::after {
 
 .title {
     text-align: left;
-    font-size: 18px;
+    font-size: 24px;
     letter-spacing: 3px;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
     background: linear-gradient(90deg, var(--glow-cyan), var(--glow-pink), var(--glow-yellow));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -263,7 +263,7 @@ body::after {
 }
 
 .subtitle {
-    font-size: 8px;
+    font-size: 12px;
     text-align: left;
     color: rgba(255, 255, 255, 0.45);
     letter-spacing: 2px;
@@ -284,7 +284,7 @@ body::after {
 }
 
 #overlay h2 {
-    font-size: 14px;
+    font-size: 20px;
     color: var(--glow-cyan);
     text-shadow: 0 0 20px var(--glow-cyan);
     text-align: center;
@@ -305,7 +305,7 @@ body::after {
 }
 
 #overlay p {
-    font-size: 7px;
+    font-size: 10px;
     color: rgba(255, 255, 255, 0.4);
     text-align: center;
     line-height: 2;
@@ -317,8 +317,8 @@ body::after {
     border: 2px solid var(--glow-pink);
     color: var(--glow-pink);
     font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    padding: 12px 24px;
+    font-size: 12px;
+    padding: 16px 32px;
     cursor: pointer;
     letter-spacing: 2px;
     text-shadow: 0 0 10px var(--glow-pink);
@@ -334,7 +334,7 @@ body::after {
 
 /* ─── Controls hint ─── */
 .controls {
-    font-size: 5px;
+    font-size: 8px;
     color: rgba(255, 255, 255, 0.25);
     text-align: center;
     line-height: 2.5;
@@ -381,7 +381,7 @@ body::after {
 }
 
 .rank-no {
-    font-size: 5px;
+    font-size: 8px;
     color: rgba(255, 255, 255, 0.4);
     text-align: right;
 }
@@ -403,7 +403,7 @@ body::after {
 }
 
 .rank-name {
-    font-size: 5px;
+    font-size: 8px;
     color: var(--text);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -412,7 +412,7 @@ body::after {
 }
 
 .rank-score {
-    font-size: 5px;
+    font-size: 8px;
     color: var(--glow-cyan);
     text-shadow: 0 0 6px var(--glow-cyan);
     white-space: nowrap;
@@ -446,7 +446,7 @@ body::after {
 }
 
 .rank-empty {
-    font-size: 5px;
+    font-size: 8px;
     color: rgba(255, 255, 255, 0.2);
     text-align: center;
     padding: 8px 0;
@@ -454,7 +454,7 @@ body::after {
 }
 
 .rank-loading {
-    font-size: 5px;
+    font-size: 8px;
     color: var(--glow-cyan);
     text-align: center;
     padding: 8px 0;
