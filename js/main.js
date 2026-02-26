@@ -8,7 +8,7 @@ import {
     getGhostY, getDropSpeed, actualClearLines, COLS, ROWS, PIECES
 } from './game.js';
 import { draw, drawNext, clearCanvas } from './render.js';
-import { updateUI, showStartOverlay, showGameOverOverlay, hideOverlay, updateAuthUI } from './ui.js';
+import { updateUI, showLoginRequiredOverlay, showReadyOverlay, showGameOverOverlay, hideOverlay, updateAuthUI } from './ui.js';
 import { saveScore, loadRanking } from './ranking.js';
 
 // ─── Auth ────────────────────────────────────────────────────
@@ -18,6 +18,14 @@ onAuthStateChanged(auth, (user) => {
     currentUser = user;
     updateAuthUI(user);
     loadRanking();
+    // 게임 중이 아닼 경우에만 오버레이 전환
+    if (!state.running) {
+        if (user) {
+            showReadyOverlay();
+        } else {
+            showLoginRequiredOverlay();
+        }
+    }
 });
 
 document.getElementById('auth-btn').addEventListener('click', async () => {
@@ -36,6 +44,11 @@ document.getElementById('auth-btn').addEventListener('click', async () => {
 
 // ─── Game Start / End ────────────────────────────────────────
 export function startGame() {
+    // 로그인 필수 체크
+    if (!currentUser) {
+        showLoginRequiredOverlay();
+        return;
+    }
     state.board = createBoard();
     state.score = 0;
     state.level = 1;
@@ -63,7 +76,7 @@ async function endGame() {
         await loadRanking();
     }
 
-    showGameOverOverlay(state.score, state.level, state.lines, !!currentUser);
+    showGameOverOverlay(state.score, state.level, state.lines);
 }
 
 // ─── Piece Management ────────────────────────────────────────
@@ -175,7 +188,9 @@ document.addEventListener('keydown', e => {
     updateUI();
 });
 
-// ─── Init ────────────────────────────────────────────────────
+// ─── Init ────────────────────────────────────────────
 clearCanvas();
-showStartOverlay();
+// 첫 로드 시는 인증 상태를 모르드로 로그인 요구 화면 먼저 표시
+// onAuthStateChanged가 한번 발화하면 자동으로 올바른 화면으로 대체됨
+showLoginRequiredOverlay();
 loadRanking();

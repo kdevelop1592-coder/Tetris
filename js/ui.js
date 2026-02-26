@@ -12,7 +12,24 @@ export function updateUI() {
 }
 
 // ─── Overlay ────────────────────────────────────────────────
-export function showStartOverlay() {
+
+// 비로그인 상태: 로그인 요구 화면
+export function showLoginRequiredOverlay() {
+    const overlay = document.getElementById('overlay');
+    overlay.style.display = 'flex';
+    overlay.innerHTML = `
+        <h2>TETRIS</h2>
+        <p style="font-size:6px;color:#ff00aa;text-shadow:0 0 10px #ff00aa;">로그인이 필요합니다</p>
+        <p>← → 이동 &nbsp;|&nbsp; ↑ 회전<br>↓ 빠르게 &nbsp;|&nbsp; SPACE 즉시 낙하<br>P 일시정지</p>
+        <button class="start-btn" id="auth-overlay-btn">GOOGLE LOGIN</button>
+    `;
+    document.getElementById('auth-overlay-btn').addEventListener('click', () => {
+        document.getElementById('auth-btn').click();
+    });
+}
+
+// 로그인 상태: 게임 시작 화면
+export function showReadyOverlay() {
     const overlay = document.getElementById('overlay');
     overlay.style.display = 'flex';
     overlay.innerHTML = `
@@ -25,16 +42,13 @@ export function showStartOverlay() {
     });
 }
 
-export function showGameOverOverlay(score, level, lines, isLoggedIn) {
+export function showGameOverOverlay(score, level, lines) {
     const overlay = document.getElementById('overlay');
     overlay.style.display = 'flex';
-    const saveMsg = isLoggedIn
-        ? '<span style="color:#00ffff;font-size:5px;">✔ 점수가 랭킹에 저장되었습니다</span>'
-        : '<span style="color:rgba(255,255,255,0.3);font-size:5px;">로그인하면 점수가 저장됩니다</span>';
     overlay.innerHTML = `
         <h2>GAME OVER</h2>
         <p>SCORE: ${score.toLocaleString()}<br>LEVEL: ${level}<br>LINES: ${lines}</p>
-        ${saveMsg}
+        <span style="color:#00ffff;font-size:5px;">✔ 점수가 랭킹에 저장되었습니다</span>
         <button class="start-btn" id="start-btn">RETRY</button>
     `;
     document.getElementById('start-btn').addEventListener('click', () => {
